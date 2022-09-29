@@ -6,50 +6,26 @@ public class BankAccount {
 
     private final String accountNumber;
     private double balance;
-    private Lock reentrantLock;
+
 
     public BankAccount(String accountNumber, double initialBalance) {
         this.accountNumber = accountNumber;
         this.balance = initialBalance;
-        this.reentrantLock = new ReentrantLock();
     }
 
 
     public double deposit(double amount) {
-        try {
-            if (reentrantLock.tryLock(1000, TimeUnit.MILLISECONDS)) {
-                try {
-                    balance += amount;
-                } finally {
-                    reentrantLock.unlock();
-                }
-            } else {
-                System.out.println("Could not get the lock too");
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return amount;
-
+    if (amount<=0){
+        System.out.println("Cannot add this amount");
+    }
+      return this.balance+=amount;
     }
 
     public double withdraw(double amount) {
-        try {
-            if (reentrantLock.tryLock(1000, TimeUnit.MILLISECONDS)) {
-                try {
-                    balance -= amount;
-                } finally {
-                    reentrantLock.unlock();
-                }
-            } else {
-                System.out.println("Could not get the lock");
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return amount;
+if (amount>balance){
+    System.out.println("Insufficient funds cannot withdraw");
+} return this.balance-=amount;
     }
-
     public String getAccountNumber() {
 
         return accountNumber;
